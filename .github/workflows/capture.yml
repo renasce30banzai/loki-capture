@@ -1,10 +1,8 @@
 name: loki-capture
 
 on:
-  # Loki está atrás de ALB da AWS com allowlist de IP (só IP brasileiro passa).
-  # Runners do GitHub são bloqueados (403). Reativar o cron quando houver proxy BR.
-  # schedule:
-  #   - cron: "*/5 * * * *"
+  schedule:
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -30,8 +28,10 @@ jobs:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
           STATE_KEY: ${{ secrets.STATE_KEY }}
+          PROXY: ${{ secrets.PROXY }}
           RUN_SECONDS: "230"
-          LOOKBACK_MIN: "20"
+          LOOKBACK_MIN: "15"
+          INTERVAL: "15"
         run: |
           pip install --quiet cryptography
           python3 -u capture.py
