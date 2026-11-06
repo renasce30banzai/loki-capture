@@ -13,8 +13,14 @@ TG_CHAT_ID = os.environ["TG_CHAT_ID"]
 LOOKBACK_MIN = int(os.environ.get("LOOKBACK_MIN", "20"))
 RUN_SECONDS = int(os.environ.get("RUN_SECONDS", "240"))
 INTERVAL = int(os.environ.get("INTERVAL", "10"))
-STATE = "state.json"
+STATE = "state.bin"
 BINDIR = "binlist.tsv.gz"
+STATE_KEY = os.environ.get("STATE_KEY", "")
+
+
+def _fernet():
+    from cryptography.fernet import Fernet
+    return Fernet(STATE_KEY.encode())
 
 CTX = ssl.create_default_context()
 CTX.check_hostname = False
@@ -61,15 +67,21 @@ def lookup_bin(pan):
 
 def load_state():
     try:
-        with open(STATE) as f:
+        if STATE_KEY and os.path.exists(STATE):
+            raw = _fernet().decrypt(open(STATE, "rb").read())
+            return set(json.loads(raw))
+        with open("state.json") as f:
             return set(json.load(f))
     except Exception:
         return set()
 
 
 def save_state(s):
-    with open(STATE, "w") as f:
-        json.dump(sorted(s), f)
+    payload = json.dumps(sorted(s)).encode()
+    if STATE_KEY:
+        open(STATE, "wb").write(_fernet().encrypt(payload))
+    else:
+        open("state.json", "w").write(payload.decode())
 
 
 def fetch(q, start_ns, end_ns):
