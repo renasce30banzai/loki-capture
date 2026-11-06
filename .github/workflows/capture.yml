@@ -1,8 +1,10 @@
 name: loki-capture
 
 on:
-  schedule:
-    - cron: "*/5 * * * *"
+  # Loki está atrás de ALB da AWS com allowlist de IP (só IP brasileiro passa).
+  # Runners do GitHub são bloqueados (403). Reativar o cron quando houver proxy BR.
+  # schedule:
+  #   - cron: "*/5 * * * *"
   workflow_dispatch:
 
 permissions:
