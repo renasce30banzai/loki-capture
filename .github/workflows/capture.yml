@@ -1,8 +1,11 @@
 name: loki-capture
 
 on:
-  schedule:
-    - cron: "*/5 * * * *"
+  # SEM cron: o Mac (launchd com.teampurple.loki) e o primario e roda por IP direto.
+  # Disparo manual = fallback quando o Mac estiver fora. Ligar os dois ao mesmo tempo
+  # duplica mensagens (dedupe local e state.bin sao listas separadas).
+  # schedule:
+  #   - cron: "*/5 * * * *"
   workflow_dispatch:
 
 permissions:
