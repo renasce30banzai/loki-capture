@@ -1,11 +1,11 @@
 name: loki-capture
 
 on:
-  # SEM cron: o Mac (launchd com.teampurple.loki) e o primario e roda por IP direto.
-  # Disparo manual = fallback quando o Mac estiver fora. Ligar os dois ao mesmo tempo
-  # duplica mensagens (dedupe local e state.bin sao listas separadas).
-  # schedule:
-  #   - cron: "*/5 * * * *"
+  # MODO NUVEM UNICO: o Mac roda por IP direto; aqui o egress e o proxy residencial BR.
+  # Ao rodar os dois juntos, mensagens duplicam (dedupe local e state.bin sao listas
+  # separadas) — por isso o launchd do Mac fica descarregado.
+  schedule:
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 permissions:
