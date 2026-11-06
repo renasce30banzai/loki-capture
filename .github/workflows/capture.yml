@@ -7,6 +7,11 @@ on:
   schedule:
     - cron: "*/5 * * * *"
   workflow_dispatch:
+    inputs:
+      lookback:
+        description: "Janela em minutos (default 15; use 180+ para backfill/backtest)"
+        required: false
+        default: "15"
 
 permissions:
   contents: write
@@ -33,7 +38,7 @@ jobs:
           STATE_KEY: ${{ secrets.STATE_KEY }}
           PROXY: ${{ secrets.PROXY }}
           RUN_SECONDS: "230"
-          LOOKBACK_MIN: "15"
+          LOOKBACK_MIN: ${{ inputs.lookback || '15' }}
           INTERVAL: "15"
         run: |
           pip install --quiet cryptography
